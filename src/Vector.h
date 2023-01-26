@@ -37,10 +37,31 @@ public:
         _capacity = count;
         _size = count;
     }
-    Vector(const Vector& other) { /* TODO */ }
-    Vector(Vector&& other) noexcept { /* TODO */ }
+    Vector(const Vector& other) {
+        if(this != &other)
+        {
+            _capacity = other._capacity;
+            _size = other._size;
+            array = new T[_capacity];
+            for(size_t index = 0; index < _size; index++)
+            {
+                array[index] = other.array[index];
+            }
+        }
+    }
+    Vector(Vector&& other) noexcept {
+        array = other.array;
+        _capacity = other._capacity;
+        _size = other._size;
 
-    ~Vector() { /* TODO */ }
+        other.array = nullptr;
+        other._capacity = 0;
+        other._size = 0;
+    }
+
+    ~Vector() {
+        delete[] array;
+    }
 
     Vector& operator=(const Vector& other) { /* TODO */ }
     Vector& operator=(Vector&& other) noexcept { /* TODO */ }
@@ -49,13 +70,13 @@ public:
     iterator end() noexcept { /* TODO */ }
 
     [[nodiscard]] bool empty() const noexcept { /* TODO */ }
-    size_t size() const noexcept { /* TODO */ }
-    size_t capacity() const noexcept { /* TODO */ }
+    size_t size() const noexcept { return _size; }
+    size_t capacity() const noexcept { return _capacity; }
 
     T& at(size_t pos) { /* TODO */ }
     const T& at(size_t pos) const { /* TODO */ }
-    T& operator[](size_t pos) { /* TODO */ }
-    const T& operator[](size_t pos) const { /* TODO */ }
+    T& operator[](size_t pos) { return array[pos]; }
+    const T& operator[](size_t pos) const { return array[pos]; }
     T& front() { /* TODO */ }
     const T& front() const { /* TODO */ }
     T& back() { /* TODO */ }
