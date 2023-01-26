@@ -38,16 +38,14 @@ public:
         _size = count;
     }
     Vector(const Vector& other) {
-        if(this != &other)
+        _capacity = other._capacity;
+        _size = other._size;
+        array = new T[_capacity];
+        for(size_t index = 0; index < _size; index++)
         {
-            _capacity = other._capacity;
-            _size = other._size;
-            array = new T[_capacity];
-            for(size_t index = 0; index < _size; index++)
-            {
-                array[index] = other.array[index];
-            }
+            array[index] = other.array[index];
         }
+        
     }
     Vector(Vector&& other) noexcept {
         array = other.array;
@@ -63,8 +61,35 @@ public:
         delete[] array;
     }
 
-    Vector& operator=(const Vector& other) { /* TODO */ }
-    Vector& operator=(Vector&& other) noexcept { /* TODO */ }
+    Vector& operator=(const Vector& other) { /* TODO */ 
+        if(this != &other)
+        {
+            delete[] array;
+            this->_capacity = other._capacity;
+            this->_size = other._size;
+            this->array = new T[other._capacity];
+
+            for(size_t index = 0; index < other._size; index++)
+            {
+                this->array[index] = other.array[index];
+            }
+        }
+        return *this;
+    }
+    Vector& operator=(Vector&& other) noexcept { /* TODO */ 
+        if(this != &other)
+        {
+            delete[] array;
+            this->_capacity = other._capacity;
+            this->_size = other._size;
+            this->array = other.array;
+
+            other.array = nullptr;
+            other._capacity = 0;
+            other._size = 0;
+        }
+        return *this;
+    }
 
     iterator begin() noexcept { /* TODO */ }
     iterator end() noexcept { /* TODO */ }
