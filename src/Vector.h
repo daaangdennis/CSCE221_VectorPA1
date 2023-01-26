@@ -32,7 +32,7 @@ public:
             array[index] = value;
         }
     }
-    explicit Vector(size_t count) { /* TODO */ 
+    explicit Vector(size_t count) { 
         array = new T[count];
         _capacity = count;
         _size = count;
