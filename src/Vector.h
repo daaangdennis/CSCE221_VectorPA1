@@ -108,8 +108,22 @@ public:
         return *this;
     }
 
-    iterator begin() noexcept {/*TODO*/ }
-    iterator end() noexcept { /* TODO */ }
+    iterator begin() noexcept {
+        if(_size != 0)
+        {
+            return iterator(&array[0]);
+        }
+        return nullptr;
+    }
+    iterator end() noexcept { 
+        if(_size != 0)
+        {
+            iterator temp{array+_size};
+            return temp;
+        }
+        return nullptr;
+        
+    }
 
     [[nodiscard]] bool empty() const noexcept {
         if(_size == 0)
@@ -182,44 +196,52 @@ public:
     private:
         // Add your own data members here
         // HINT: For random_access_iterator, the data member is a pointer 99.9% of the time
-    public:
-        iterator() { /* TODO */ }
-        // Add any constructors that you may need
+        pointer ptr;
 
+    public:
+        iterator() {ptr = nullptr;}
+        // Add any constructors that you may need
+        iterator(pointer point) {ptr = point;}
+        
         // This assignment operator is done for you, please do not add more
         iterator& operator=(const iterator&) noexcept = default;
 
-        [[nodiscard]] reference operator*() const noexcept { /* TODO */ }
-        [[nodiscard]] pointer operator->() const noexcept { /* TODO */ }
+        [[nodiscard]] reference operator*() const noexcept { return *ptr; }
+        [[nodiscard]] pointer operator->() const noexcept { return ptr; }
 
         // Prefix Increment: ++a
-        iterator& operator++() noexcept { /* TODO */ }
+        iterator& operator++() noexcept { ptr++; return *this;}
         // Postfix Increment: a++
-        iterator operator++(int) noexcept { /* TODO */ }
+        iterator operator++(int) noexcept {iterator temp = *this; ptr++; return temp;}
         // Prefix Decrement: --a
-        iterator& operator--() noexcept { /* TODO */ }
+        iterator& operator--() noexcept { ptr--; return *this; }
         // Postfix Decrement: a--
-        iterator operator--(int) noexcept { /* TODO */ }
+        iterator operator--(int) noexcept {iterator temp = *this; ptr--; return temp; }
 
-        iterator& operator+=(difference_type offset) noexcept { /* TODO */ }
-        [[nodiscard]] iterator operator+(difference_type offset) const noexcept { /* TODO */ }
+        iterator& operator+=(difference_type offset) noexcept { ptr += offset; return *this; }
+        [[nodiscard]] iterator operator+(difference_type offset) const noexcept {iterator temp = *this; temp.ptr += offset; return temp; }
         
-        iterator& operator-=(difference_type offset) noexcept { /* TODO */ }
-        [[nodiscard]] iterator operator-(difference_type offset) const noexcept { /* TODO */ }
-        [[nodiscard]] difference_type operator-(const iterator& rhs) const noexcept { /* TODO */ }
+        iterator& operator-=(difference_type offset) noexcept { ptr -= offset; return *this; }
+        [[nodiscard]] iterator operator-(difference_type offset) const noexcept { iterator temp = *this; temp.ptr -= offset; return temp; }
+        [[nodiscard]] difference_type operator-(const iterator& rhs) const noexcept {return (this->ptr - rhs.ptr); }
 
-        [[nodiscard]] reference operator[](difference_type offset) const noexcept { /* TODO */ }
+        [[nodiscard]] reference operator[](difference_type offset) const noexcept { return *(ptr + offset); }
 
-        [[nodiscard]] bool operator==(const iterator& rhs) const noexcept { /* TODO */ }
-        [[nodiscard]] bool operator!=(const iterator& rhs) const noexcept { /* TODO */ }
-        [[nodiscard]] bool operator<(const iterator& rhs) const noexcept { /* TODO */ }
-        [[nodiscard]] bool operator>(const iterator& rhs) const noexcept { /* TODO */ }
-        [[nodiscard]] bool operator<=(const iterator& rhs) const noexcept { /* TODO */ }
-        [[nodiscard]] bool operator>=(const iterator& rhs) const noexcept { /* TODO */ }
+        [[nodiscard]] bool operator==(const iterator& rhs) const noexcept { return this->ptr == rhs.ptr; }
+        [[nodiscard]] bool operator!=(const iterator& rhs) const noexcept { return this->ptr != rhs.ptr; }
+        [[nodiscard]] bool operator<(const iterator& rhs) const noexcept { return this->ptr < rhs.ptr; }
+        [[nodiscard]] bool operator>(const iterator& rhs) const noexcept { return this->ptr > rhs.ptr; }
+        [[nodiscard]] bool operator<=(const iterator& rhs) const noexcept { return this->ptr <= rhs.ptr; }
+        [[nodiscard]] bool operator>=(const iterator& rhs) const noexcept { return this->ptr >= rhs.ptr; }
     };
 
 
-    void clear() noexcept { /* TODO */ }
+    void clear() noexcept { 
+        T* empty_array = new T[_capacity];
+        delete[] array;
+        _size = 0;
+        array = empty_array;
+    }
 };
 
 // This ensures at compile time that the deduced argument _Iterator is a Vector<T>::iterator
@@ -231,6 +253,6 @@ namespace {
 }
 
 template <typename _Iterator, bool _enable = is_vector_iterator<_Iterator>::value>
-[[nodiscard]] _Iterator operator+(typename _Iterator::difference_type offset, _Iterator const& iterator) noexcept { /* TODO */ }
+[[nodiscard]] _Iterator operator+(typename _Iterator::difference_type offset, _Iterator const& iterator) noexcept { _Iterator temp{iterator + offset}; return temp;}
 
 #endif
