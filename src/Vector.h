@@ -15,7 +15,24 @@ private:
     size_t _capacity, _size;
 
     // You may want to write a function that grows the vector
-    void grow() { /* TODO */ }
+    void grow() {
+        if(_capacity == 0)
+        {
+            _capacity++;
+            T* new_array = new T[_capacity];
+            delete[] array;
+            array = new_array;
+            return;
+        }
+        _capacity = _capacity * 2;
+        T* new_array = new T[_capacity];
+        for(size_t index = 0; index < _size; index++)
+        {
+            new_array[index] = array[index];
+        }
+        delete[] array;
+        array = new_array;
+    }
 
 public:
     Vector() noexcept {
@@ -91,24 +108,62 @@ public:
         return *this;
     }
 
-    iterator begin() noexcept { /* TODO */ }
+    iterator begin() noexcept {/*TODO*/ }
     iterator end() noexcept { /* TODO */ }
 
-    [[nodiscard]] bool empty() const noexcept { /* TODO */ }
+    [[nodiscard]] bool empty() const noexcept {
+        if(_size == 0)
+        {
+            return true;
+        }
+        return false;
+    }
     size_t size() const noexcept { return _size; }
     size_t capacity() const noexcept { return _capacity; }
 
-    T& at(size_t pos) { /* TODO */ }
-    const T& at(size_t pos) const { /* TODO */ }
+    T& at(size_t pos) {
+        if(pos < 0 || pos >= _capacity)
+        {
+            throw std::out_of_range("index out of range");
+        }
+        return array[pos];
+    }
+    const T& at(size_t pos) const {
+        if(pos < 0 || pos >= _capacity)
+        {
+            throw std::out_of_range("index out of range");
+        }
+        return array[pos];
+     }
     T& operator[](size_t pos) { return array[pos]; }
     const T& operator[](size_t pos) const { return array[pos]; }
-    T& front() { /* TODO */ }
-    const T& front() const { /* TODO */ }
-    T& back() { /* TODO */ }
-    const T& back() const { /* TODO */ }
+    T& front() { return array[0]; }
+    const T& front() const { return array[0]; }
+    T& back() { return array[_size-1]; }
+    const T& back() const { return array[_size-1]; }
 
-    void push_back(const T& value) { /* TODO */ }
-    void push_back(T&& value) { /* TODO */ }
+    void push_back(const T& value) {
+        if(_size == _capacity)
+        {
+            grow();
+            array[_size] = value;
+            _size++;
+            return;
+        }
+        array[_size] = value;
+        _size++;
+    }
+    void push_back(T&& value) {
+        if(_size == _capacity)
+        {
+            grow();
+            array[_size] = value;
+            _size++;
+            return;
+        }
+        array[_size] = value;
+        _size++;
+    }
     void pop_back() { /* TODO */ }
 
     iterator insert(iterator pos, const T& value) { /* TODO */ }
