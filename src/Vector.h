@@ -51,6 +51,10 @@ public:
     }
     explicit Vector(size_t count) { 
         array = new T[count];
+        for(size_t index = 0; index < count; index++)
+        {
+            array[index] = T{};
+        }
         _capacity = count;
         _size = count;
     }
@@ -78,7 +82,7 @@ public:
         delete[] array;
     }
 
-    Vector& operator=(const Vector& other) { /* TODO */ 
+    Vector& operator=(const Vector& other) { 
         if(this != &other)
         {
             delete[] array;
@@ -93,7 +97,7 @@ public:
         }
         return *this;
     }
-    Vector& operator=(Vector&& other) noexcept { /* TODO */ 
+    Vector& operator=(Vector&& other) noexcept { 
         if(this != &other)
         {
             delete[] array;
@@ -173,17 +177,37 @@ public:
             grow();
             array[_size] = value;
             _size++;
+            value = T{};
             return;
         }
         array[_size] = value;
         _size++;
+        value = T{};
     }
-    void pop_back() { /* TODO */ }
+    void pop_back() { _size--; }
 
     iterator insert(iterator pos, const T& value) { /* TODO */ }
     iterator insert(iterator pos, T&& value) { /* TODO */ }
     iterator insert(iterator pos, size_t count, const T& value) { /* TODO */ }
-    iterator erase(iterator pos) { /* TODO */ }
+    iterator erase(iterator pos) { 
+        /*if(&(*pos) == &array[_size-1])
+        {
+            iterator temp = end();
+            _size--;
+            return temp;
+        }
+        else
+        {
+            iterator temp = pos;
+            for(auto it = pos; it != end(); it++)
+            {
+                *it = *(++pos);
+            }
+            _size--;
+            return temp;
+            
+        }*/
+    }
     iterator erase(iterator first, iterator last) { /* TODO */ }
 
     class iterator {
