@@ -24,6 +24,7 @@ private:
             array = new_array;
             return;
         }
+
         _capacity = _capacity * 2;
         T* new_array = new T[_capacity];
         for(size_t index = 0; index < _size; index++)
@@ -172,43 +173,51 @@ public:
         _size++;
     }
     void push_back(T&& value) {
-        if(_size == _capacity)
+        /*if(_size == _capacity)
         {
             grow();
             array[_size] = value;
             _size++;
-            value = T{};
             return;
         }
         array[_size] = value;
-        _size++;
-        value = T{};
+        _size++;*/
+        push_back(value);
     }
     void pop_back() { _size--; }
 
-    iterator insert(iterator pos, const T& value) { /* TODO */ }
+    iterator insert(iterator pos, const T& value) {/* TODO */}
     iterator insert(iterator pos, T&& value) { /* TODO */ }
     iterator insert(iterator pos, size_t count, const T& value) { /* TODO */ }
     iterator erase(iterator pos) { 
-        /*if(&(*pos) == &array[_size-1])
+        if(pos == end())
         {
-            iterator temp = end();
             _size--;
-            return temp;
+            return end();
         }
-        else
+        iterator temp = pos;
+        for(auto it = ++pos; it != end(); it++)
         {
-            iterator temp = pos;
-            for(auto it = pos; it != end(); it++)
-            {
-                *it = *(++pos);
-            }
-            _size--;
-            return temp;
-            
-        }*/
+            it[-1] = *it;
+        }
+        _size--;
+        return temp;
+ 
     }
-    iterator erase(iterator first, iterator last) { /* TODO */ }
+    iterator erase(iterator first, iterator last) {
+        if(last == end())
+        {
+            _size = 0;
+            return end();
+        }
+        //Shifts all elements from range [last,end] to the left
+        for(auto it = last; it != end(); it++)
+        {
+            it[first-last] = *it;
+        }
+        _size = _size - (last-first);
+        return first;
+    }
 
     class iterator {
     public:
