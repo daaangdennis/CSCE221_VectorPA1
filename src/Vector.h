@@ -29,7 +29,7 @@ private:
         T* new_array = new T[_capacity];
         for(size_t index = 0; index < _size; index++)
         {
-            new_array[index] = array[index];
+            new_array[index] = std::move(array[index]);
         }
         delete[] array;
         array = new_array;
@@ -173,22 +173,70 @@ public:
         _size++;
     }
     void push_back(T&& value) {
-        /*if(_size == _capacity)
+        if(_size == _capacity)
         {
             grow();
-            array[_size] = value;
+            array[_size] = std::move(value);
             _size++;
             return;
         }
-        array[_size] = value;
-        _size++;*/
-        push_back(value);
+        array[_size] = std::move(value);
+        _size++;
     }
     void pop_back() { _size--; }
 
-    iterator insert(iterator pos, const T& value) {/* TODO */}
-    iterator insert(iterator pos, T&& value) { /* TODO */ }
-    iterator insert(iterator pos, size_t count, const T& value) { /* TODO */ }
+    iterator insert(iterator pos, const T& value) {
+        size_t insertSpot = pos - begin();
+        if(_size == _capacity)
+        {
+            grow();
+        }
+
+        for(size_t index = _size; index > insertSpot; index--)
+        {
+            array[index] = std::move(array[index-1]);
+        }
+        array[insertSpot]= value;
+        iterator ret(&array[insertSpot]);
+        _size++;
+        return ret;
+        
+    }
+    iterator insert(iterator pos, T&& value) {
+        size_t insertSpot = pos - begin();
+        if(_size == _capacity)
+        {
+            grow();
+        }
+        for(size_t index = _size; index > insertSpot; index--)
+        {
+            array[index] = std::move(array[index-1]);
+        }
+        array[insertSpot ]= std::move(value);
+        iterator ret(&array[insertSpot]);
+        _size++;
+        return ret;
+    }
+    iterator insert(iterator pos, size_t count, const T& value) {
+        size_t insertSpot = pos - begin();
+        while((_size + count) >= _capacity)
+        {
+            grow();
+        }
+
+        for(size_t index = _size; index > insertSpot; index--)
+        {
+            array[index+count-1] = array[index-1];
+        }
+
+        for(size_t index = insertSpot; index < (insertSpot + count); index++)
+        {
+            array[index] = value;
+        }
+        iterator ret(&array[insertSpot]);
+        _size += count;
+        return ret;
+    }
     iterator erase(iterator pos) { 
         if(pos == end())
         {
